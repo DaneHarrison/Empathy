@@ -2,14 +2,15 @@ version: '3.8'
 services:
 
   postgres:
-    build: ./postgres
-    image: postgres
+    image: postgres:latest
+    restart: unless-stopped
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PW}
-    restart: unless-stopped
     volumes: 
+      # The init script needs to be added first, otherwise, docker will think a database already exists
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./postgres/data:/var/lib/postgresql/data
     ports:
       - '5432:5432'
